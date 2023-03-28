@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "~/components/layout";
 import { FormField } from "~/components/form-field";
-import { Form, useActionData } from "@remix-run/react";
+import { useActionData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { getUser, login, register } from "~/utils/auth.server";
