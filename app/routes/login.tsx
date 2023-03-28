@@ -124,7 +124,7 @@ export default function Login() {
             : "Sign up to get started!"}
         </p>
 
-        <Form
+        <form
           method="post"
           className="rounded-2xl bg-gray-100 p-6 w-96 shadow-lg"
         >
@@ -166,7 +166,7 @@ export default function Login() {
               {action === "login" ? "Sign In" : "Sign Up"}
             </button>
           </div>
-        </Form>
+        </form>
       </div>
     </Layout>
   );
