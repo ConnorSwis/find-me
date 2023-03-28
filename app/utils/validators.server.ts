@@ -1,7 +1,6 @@
 export const validateEmail = (email: string): string | true => {
   var validRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
   if (!email.length) {
     return `Please enter a value`;
   }
@@ -12,8 +11,10 @@ export const validateEmail = (email: string): string | true => {
 };
 
 export const validatePassword = (password: string): string | true => {
+  console.log(password);
   if (password.length < 5) {
-    return "Please enter a password that is at least 5 characters long";
+    console.log(password.length)
+    return "Password must be at least 5 characters long";
   }
   return true;
 };

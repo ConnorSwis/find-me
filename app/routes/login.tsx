@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { Layout } from "~/components/layout";
 import { FormField } from "~/components/form-field";
 import { Form, useActionData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type { ActionFunction } from "@remix-run/node";
-import { login, register } from "~/utils/auth.server";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { getUser, login, register } from "~/utils/auth.server";
 import {
   validateEmail,
   validatePassword,
@@ -18,24 +18,25 @@ export const action: ActionFunction = async ({ request }) => {
   let email = form.get("email") as string;
   const password = form.get("password") as string;
   let username = form.get("username") as string;
+  if (!username) username = "";
+  console.log("login.tsx: " + password);
 
   const errors = {
     email: validateEmail(email),
     password: validatePassword(password),
     username: validateUsername(username),
   };
-  console.log(errors);
-  if (action === "login" && errors.email) {
-    username = email;
-    email = "";
-    errors.email = true;
+  if (action === "login") {
+    errors.username = true;
+    if (errors.email && email.length) {
+      username = email;
+      email = "";
+      errors.email = true;
+    }
   }
-  console.log(errors);
   if (
     // Check if any results from validation are `true` and not a non-empty string
-    Object.values(errors).filter(
-      (value) => typeof value === "boolean" && value === true
-    ).length
+    Object.values(errors).filter((value) => typeof value !== "boolean").length
   ) {
     return json({ errors: { ...errors }, form: action }, { status: 400 });
   }
@@ -52,10 +53,14 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
+export const loader: LoaderFunction = async ({ request }) => {
+  return (await getUser(request)) ? redirect("/") : null;
+};
+
 export default function Login() {
   const actionData = useActionData();
   const firstLoad = useRef(true);
-  const [formError, setFormError] = useState(actionData?.errors || "");
+  const [formError, setFormError] = useState(actionData?.error || "");
   const [errors, setErrors] = useState(actionData?.errors || {});
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
@@ -77,16 +82,24 @@ export default function Login() {
     }
   }, [action]);
   useEffect(() => {
+    console.log("ln 82");
     if (!firstLoad.current) {
+      console.log("ln 84");
       setFormError("");
     }
   }, [formData]);
   useEffect(() => {
+    console.log("ln 89");
     firstLoad.current = false;
   }, []);
   useEffect(() => {
+    console.log(actionData?.errors);
     setErrors(actionData?.errors);
+    console.log(errors);
   }, [actionData?.errors]);
+  useEffect(() => {
+    setFormError(actionData?.error);
+  }, [actionData?.error]);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -100,19 +113,23 @@ export default function Login() {
       <div className="h-full justify-center items-center flex flex-col gap-y-4">
         <button
           onClick={() => setAction(action == "login" ? "register" : "login")}
-          className="absolute top-8 right-8 rounded-xl mt-2 bg-red-600 px-3 py-2 text-gray-800 font-semibold transition duration-100 ease-in-out hover:bg-red-500"
+          className="absolute top-8 right-8 rounded-xl mt-2 text-gray-100 bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
         >
           {action === "login" ? "Sign Up" : "Sign In"}
         </button>
-        <h2 className="text-5xl font-extrabold text-red-600">find.me</h2>
-        <p className="font-semibold text-slate-300">
+        <h2 className="text-5xl font-extrabold text-blue-600">find.me</h2>
+        <p className="font-semibold ">
           {action === "login"
             ? "Log in so others can find you!"
             : "Sign up to get started!"}
         </p>
 
-        <Form method="post" className="rounded-2xl bg-gray-800 p-6 w-96">
-          <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
+        <form
+          method="post"
+          className="rounded-2xl bg-gray-100 p-6 w-96 shadow-lg"
+        >
+          <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
+            &nbsp;
             {formError}
           </div>
           <FormField
@@ -144,12 +161,12 @@ export default function Login() {
               type="submit"
               name="_action"
               value={action}
-              className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-gray-800 bg-red-600 hover:bg-red-500"
+              className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-gray-100 bg-blue-600 hover:bg-blue-500"
             >
               {action === "login" ? "Sign In" : "Sign Up"}
             </button>
           </div>
-        </Form>
+        </form>
       </div>
     </Layout>
   );

@@ -23,7 +23,7 @@ export function FormField({
   }, [error]);
   return (
     <>
-      <label htmlFor={htmlFor} className="text-red-600 font-semibold">
+      <label htmlFor={htmlFor} className="text-blue-600 font-semibold">
         {label}
       </label>
       <input
@@ -34,10 +34,11 @@ export function FormField({
         type={type}
         id={htmlFor}
         name={htmlFor}
-        className="w-full p-2 rounded-xl my-2 bg-gray-700 focus:bg-gray-600 text-white"
+        className="w-full p-2 rounded-xl my-2 border-2 border-transparent focus:border-blue-500"
         value={value}
       />
       <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
+        &nbsp;
         {errorText || ""}
       </div>
     </>
