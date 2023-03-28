@@ -82,20 +82,15 @@ export default function Login() {
     }
   }, [action]);
   useEffect(() => {
-    console.log("ln 82");
     if (!firstLoad.current) {
-      console.log("ln 84");
       setFormError("");
     }
   }, [formData]);
   useEffect(() => {
-    console.log("ln 89");
     firstLoad.current = false;
   }, []);
   useEffect(() => {
-    console.log(actionData?.errors);
     setErrors(actionData?.errors);
-    console.log(errors);
   }, [actionData?.errors]);
   useEffect(() => {
     setFormError(actionData?.error);
