@@ -17,12 +17,28 @@ export const createUser = async (user: RegisterForm) => {
 };
 
 export const getOtherUsers = async (userId: string) => {
-  return prisma.user.findMany({
+  return await prisma.user.findMany({
     where: {
       id: { not: userId },
     },
     orderBy: {
-      username: 'asc',
+      username: "asc",
     },
-  })
-}
+  });
+};
+
+export const getUserByUsername = async (username: string) => {
+  return (
+    await prisma.user.findMany({
+      where: { username: username },
+      select: { id: true, username: true, links: true },
+    })
+  )[0];
+};
+
+export const getUserById = async (userId: string) => {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, username: true, links: true },
+  });
+};

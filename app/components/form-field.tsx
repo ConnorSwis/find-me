@@ -34,7 +34,7 @@ export function FormField({
         type={type}
         id={htmlFor}
         name={htmlFor}
-        className="w-full p-2 rounded-xl my-2 border-2 border-transparent focus:border-blue-500"
+        className="w-full p-2 rounded-xl my-2 border-2 border-slate-300 bg-slate-200 shadow-inner focus:border-blue-500"
         value={value}
       />
       <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">

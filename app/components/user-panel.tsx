@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 export function UserPanel({ users }: { users: User[] }) {
   return (
@@ -6,7 +6,7 @@ export function UserPanel({ users }: { users: User[] }) {
       <div className="text-center bg-gray-300 h-20 flex items-center justify-center">
         <h2 className="text-xl text-blue-600 font-semibold">My Team</h2>
       </div>
-      <div className="flex-1 overflow-y-scroll py-4 flex flex-col gap-y-10">
+      <div className="flex-1 overflow-y-scroll p-4 flex flex-col gap-y-10">
         {users.map((user) => {
           return <p key={user.id}>{user.username}</p>;
         })}

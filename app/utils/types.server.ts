@@ -2,10 +2,12 @@ export interface RegisterForm {
   email: string;
   password: string;
   username: string;
-}
+};
 
 export interface LoginForm {
-  email?: string;
+  email: string;
   password: string;
-  username?: string;
-}
+  username: string;
+};
+
+export type IsValid = string | undefined;
