@@ -7,38 +7,51 @@ import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { getUser, login, register } from "~/utils/auth.server";
 import {
+  validateConfirmPassword,
   validateEmail,
   validatePassword,
   validateUsername,
 } from "~/utils/validators.server";
+import type { IsValid } from "~/utils/types.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const action = form.get("_action") as string;
   let email = form.get("email") as string;
   const password = form.get("password") as string;
+  const confirmPassword = form.get("confirmPassword") as string;
   let username = form.get("username") as string;
   if (!username) username = "";
-  console.log("login.tsx: " + password);
 
   const errors = {
     email: validateEmail(email),
     password: validatePassword(password),
+    confirmPassword: validateConfirmPassword(password, confirmPassword),
     username: validateUsername(username),
   };
+
   if (action === "login") {
-    errors.username = true;
+    errors.username = undefined;
+    errors.confirmPassword = undefined;
     if (errors.email && email.length) {
       username = email;
       email = "";
-      errors.email = true;
+      errors.email = undefined;
     }
   }
   if (
-    // Check if any results from validation are `true` and not a non-empty string
-    Object.values(errors).filter((value) => typeof value !== "boolean").length
+    Object.values(errors).filter((value: IsValid) => {
+      return value;
+    }).length
   ) {
-    return json({ errors: { ...errors }, form: action }, { status: 400 });
+    return json(
+      {
+        errors,
+        fields: { email, password, confirmPassword, username },
+        form: action,
+      },
+      { status: 400 }
+    );
   }
   switch (action) {
     case "login":
@@ -64,9 +77,10 @@ export default function Login() {
   const [errors, setErrors] = useState(actionData?.errors || {});
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    username: "",
+    email: actionData?.fields?.email || "",
+    password: actionData?.fields?.password || "",
+    confirmPassword: actionData?.fields?.confirmPassword || "",
+    username: actionData?.fields?.username || "",
   });
 
   useEffect(() => {
@@ -74,6 +88,7 @@ export default function Login() {
       const newState = {
         email: "",
         password: "",
+        confirmPassword: "",
         username: "",
       };
       setErrors(newState);
@@ -98,7 +113,7 @@ export default function Login() {
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    field: string
+    field: string,
   ) => {
     setFormData((form) => ({ ...form, [field]: event.target.value }));
   };
@@ -121,7 +136,7 @@ export default function Login() {
 
         <form
           method="post"
-          className="rounded-2xl bg-gray-100 p-6 w-96 shadow-lg"
+          className="rounded-2xl bg-slate-300 p-6 w-96 shadow-lg"
         >
           <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
             &nbsp;
@@ -143,13 +158,25 @@ export default function Login() {
             error={errors?.password}
           />
           {action !== "login" ? (
-            <FormField
-              htmlFor="username"
-              label="Userame"
-              value={formData.username}
-              onChange={(e) => handleInputChange(e, "username")}
-              error={errors?.username}
-            />
+            <>
+              <FormField
+                htmlFor="confirmPassword"
+                type="password"
+                label="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange(e, "confirmPassword")}
+                error={errors?.confirmPassword}
+              />
+              <FormField
+                htmlFor="username"
+                label="Userame"
+                value={formData.username}
+                onChange={(e) =>
+                  handleInputChange(e, "username")
+                }
+                error={errors?.username}
+              />
+            </>
           ) : null}
           <div className="w-full text-center">
             <button

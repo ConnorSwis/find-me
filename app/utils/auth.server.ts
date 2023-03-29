@@ -97,7 +97,8 @@ export async function requireUserId(request: Request, redirectTo: string = new U
 function getUserSession(request: Request) {
   return storage.getSession(request.headers.get('Cookie'))
 }
-async function getUserId(request: Request) {
+
+export async function getUserId(request: Request) {
   const session = await getUserSession(request)
   const userId = session.get('userId')
   if (!userId || typeof userId !== 'string') return null
