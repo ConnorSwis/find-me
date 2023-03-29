@@ -22,5 +22,5 @@ model User {
 
 type Link {
   title String
-  url   String
+  href   String
 }

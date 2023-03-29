@@ -8,6 +8,6 @@ export async function getLinks(userId: string): Promise<Link[] | undefined> {
 
 export async function addLink(userId: string) {
   const user = await getUserById(userId);
-  user?.links.push({ title: "Hello", url: "https://google.com" });
+  user?.links.push({ title: "Hello", href: "https://google.com" });
   await prisma.user.update({ where: { id: userId }, data: { ...user } });
 }
