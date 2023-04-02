@@ -27,13 +27,20 @@ export const getOtherUsers = async (userId: string) => {
         username: "asc",
       },
     });
-  };
+  }
 };
 
-export const getUserByUsername = async (username: string): Promise<{ id: string, username: string, links: Link[] }> => {
+export const getUserByUsername = async (
+  username: string,
+  matchCase: boolean = true
+): Promise<{ id: string; username: string; links: Link[] }> => {
   return (
     await prisma.user.findMany({
-      where: { username: username },
+      where: {
+        username: matchCase
+          ? username
+          : { equals: username, mode: "insensitive" },
+      },
       select: { id: true, username: true, links: true },
     })
   )[0];

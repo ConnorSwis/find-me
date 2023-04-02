@@ -47,17 +47,17 @@ export default function Home() {
     <Layout>
       <div className="h-full flex">
         <UserPanel users={users} />
-        <div className="p-10 flex flex-wrap justify-center bg-gray-100">
+        <div className="p-10 flex flex-wrap justify-center bg-slate-200">
           <h1 className="text-5xl w-full">
             Welcome back,{" "}
-            <Link to={"/" + user.username} className="text-blue-500">
+            <Link to={"/@" + user.username} className="text-blue-500">
               @{user.username}
             </Link>
           </h1>
           <ul className="flex flex-col gap-2">
             {user.links?.map((link: _Link) => {
               return link.url ? (
-                <>
+                <div className="flex gap-2">
                   <li key={link.title}>
                     <Link to={link.url} target="_blank">
                       {link.title}
@@ -71,14 +71,14 @@ export default function Home() {
                       x
                     </button>
                   </Form>
-                </>
+                </div>
               ) : null;
             })}
             <li>
               <Form
                 action="/home"
                 method="post"
-                className="bg-gray-300 p-3 rounded-md"
+                className="bg-slate-300 p-3 rounded-md"
               >
                 <input
                   type="text"
@@ -96,7 +96,7 @@ export default function Home() {
                   type="submit"
                   name="_action"
                   value="create"
-                  className="bg-blue-500 text-gray-100 font-bold text-xl rounded-full px-3 pb-1"
+                  className="bg-blue-500 text-slate-100 font-bold text-xl rounded-full px-3 pb-1"
                 >
                   +
                 </button>
