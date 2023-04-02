@@ -79,7 +79,7 @@ export default function Login() {
   const firstLoad = useRef(true);
   const [formError, setFormError] = useState(actionData?.error);
   const [errors, setErrors] = useState(actionData?.errors);
-  const [action, setAction] = useState(actionData?.form);
+  const [action, setAction] = useState(actionData?.form || "login");
   const [formData, setFormData] = useState({
     email: actionData?.fields?.email,
     password: actionData?.fields?.password,
