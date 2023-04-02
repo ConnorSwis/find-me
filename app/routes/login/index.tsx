@@ -1,7 +1,7 @@
 // app/routes/login.tsx
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "~/components/layout";
-import { FormField } from "~/components/form-field";
+import { FormField } from "~/routes/login/components/form-field";
 import { useActionData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
@@ -23,22 +23,22 @@ export const action: ActionFunction = async ({ request }) => {
   let username = form.get("username") as string;
   if (!username) username = "";
 
-  const errors = {
+  let errors: { [index: string]: IsValid } = {
     email: validateEmail(email),
     password: validatePassword(password),
-    confirmPassword: validateConfirmPassword(password, confirmPassword),
-    username: validateUsername(username),
   };
 
   if (action === "login") {
-    errors.username = undefined;
-    errors.confirmPassword = undefined;
-    if (errors.email && email.length) {
+    if (errors.email) {
       username = email;
       email = "";
-      errors.email = undefined;
+      errors.email = validateUsername(username);
     }
+  } else {
+    errors.confirmPassword = validateConfirmPassword(password, confirmPassword);
+    errors.username = validateUsername(username);
   }
+
   if (
     Object.values(errors).filter((value: IsValid) => {
       return value;
@@ -73,29 +73,29 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Login() {
   const actionData = useActionData();
   const firstLoad = useRef(true);
-  const [formError, setFormError] = useState(actionData?.error || "");
-  const [errors, setErrors] = useState(actionData?.errors || {});
+  const [formError, setFormError] = useState(actionData?.error);
+  const [errors] = useState(actionData?.errors);
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
-    email: actionData?.fields?.email || "",
-    password: actionData?.fields?.password || "",
-    confirmPassword: actionData?.fields?.confirmPassword || "",
-    username: actionData?.fields?.username || "",
+    email: actionData?.fields?.email,
+    password: actionData?.fields?.password,
+    confirmPassword: actionData?.fields?.confirmPassword,
+    username: actionData?.fields?.username,
   });
 
-  useEffect(() => {
-    if (!firstLoad.current) {
-      const newState = {
-        email: "",
-        password: "",
-        confirmPassword: "",
-        username: "",
-      };
-      setErrors(newState);
-      setFormError("");
-      setFormData(newState);
-    }
-  }, [action]);
+  // useEffect(() => {
+  //   if (!firstLoad.current) {
+  //     const newState = {
+  //       email: "",
+  //       password: "",
+  //       confirmPassword: "",
+  //       username: "",
+  //     };
+  //     setErrors(newState);
+  //     setFormError("");
+  //     setFormData(newState);
+  //   }
+  // }, [action]);
   useEffect(() => {
     if (!firstLoad.current) {
       setFormError("");
@@ -104,16 +104,16 @@ export default function Login() {
   useEffect(() => {
     firstLoad.current = false;
   }, []);
-  useEffect(() => {
-    setErrors(actionData?.errors);
-  }, [actionData?.errors]);
-  useEffect(() => {
-    setFormError(actionData?.error);
-  }, [actionData?.error]);
+  // useEffect(() => {
+  //   setErrors(actionData?.errors);
+  // }, [actionData?.errors]);
+  // useEffect(() => {
+  //   setFormError(actionData?.error);
+  // }, [actionData?.error]);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    field: string,
+    field: string
   ) => {
     setFormData((form) => ({ ...form, [field]: event.target.value }));
   };
@@ -171,9 +171,7 @@ export default function Login() {
                 htmlFor="username"
                 label="Userame"
                 value={formData.username}
-                onChange={(e) =>
-                  handleInputChange(e, "username")
-                }
+                onChange={(e) => handleInputChange(e, "username")}
                 error={errors?.username}
               />
             </>

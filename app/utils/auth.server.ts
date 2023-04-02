@@ -91,6 +91,7 @@ export async function requireUserId(request: Request, redirectTo: string = new U
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   };
+  console.log(userId)
   return userId;
 }
 

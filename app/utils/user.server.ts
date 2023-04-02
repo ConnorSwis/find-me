@@ -1,3 +1,4 @@
+import type { Link } from "@prisma/client";
 import { prisma } from "./prisma.server";
 import type { RegisterForm } from "./types.server";
 import bcrypt from "bcryptjs";
@@ -17,17 +18,19 @@ export const createUser = async (user: RegisterForm) => {
 };
 
 export const getOtherUsers = async (userId: string) => {
-  return await prisma.user.findMany({
-    where: {
-      id: { not: userId },
-    },
-    orderBy: {
-      username: "asc",
-    },
-  });
+  if (userId) {
+    return await prisma.user.findMany({
+      where: {
+        id: { not: userId },
+      },
+      orderBy: {
+        username: "asc",
+      },
+    });
+  };
 };
 
-export const getUserByUsername = async (username: string) => {
+export const getUserByUsername = async (username: string): Promise<{ id: string, username: string, links: Link[] }> => {
   return (
     await prisma.user.findMany({
       where: { username: username },
