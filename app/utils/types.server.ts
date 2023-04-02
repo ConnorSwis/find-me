@@ -10,4 +10,10 @@ export interface LoginForm {
   username: string;
 };
 
+export interface NewLinkForm {
+  title: string;
+  url: string;
+  authorId: string
+}
+
 export type IsValid = string | undefined;

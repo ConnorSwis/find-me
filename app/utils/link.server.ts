@@ -1,13 +1,25 @@
-import type { Link } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { prisma } from "./prisma.server";
-import { getUserById } from "./user.server";
+import type { NewLinkForm } from "./types.server";
 
-export async function getLinks(userId: string): Promise<Link[] | undefined> {
-  return (await getUserById(userId))?.links;
+export async function getLinks(userId: string): Promise<User | null> {
+  return await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      links: true,
+    },
+  });
 }
 
-export async function addLink(userId: string) {
-  const user = await getUserById(userId);
-  user?.links.push({ title: "Hello", href: "https://google.com" });
-  await prisma.user.update({ where: { id: userId }, data: { ...user } });
+export async function addLink(newLink: NewLinkForm) {
+  const { title, url, authorId } = newLink;
+  return await prisma.link.create({
+    data: {
+      title: title,
+      url: url,
+      author: { connect: { id: authorId } },
+    },
+  });
 }
