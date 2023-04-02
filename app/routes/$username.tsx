@@ -3,6 +3,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { RiExternalLinkFill } from "react-icons/ri";
 import { getUserByUsername } from "~/utils/user.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -26,8 +27,16 @@ export default function UserPage() {
         {links.map((link: _Link) => {
           return (
             <li key={link.id}>
-              <Link to={link.url} target="_blank" rel="noopener noreferrer">
-                {link.title}
+              <Link
+                to={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 text-lg"
+              >
+                <div className="flex flex-row gap-2">
+                  {link.title}
+                  <RiExternalLinkFill />
+                </div>
               </Link>
             </li>
           );

@@ -13,6 +13,7 @@ import {
   validateUsername,
 } from "~/utils/validators.server";
 import type { IsValid } from "~/utils/types.server";
+import Logo from "~/components/logo";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -126,7 +127,7 @@ export default function Login() {
           >
             {action === "login" ? "Sign Up" : "Sign In"}
           </button>
-          <h2 className="text-5xl font-extrabold text-blue-600 ">find.me</h2>
+          <h2><Logo /></h2>
           <p className="font-semibold ">
             {action === "login"
               ? "Log in so others can find you!"

@@ -72,7 +72,7 @@ export const login = async (form: LoginForm) => {
       { status: 400 }
     );
   }
-  return createUserSession(user.id, "/");
+  return createUserSession(user.id, "/home");
 };
 
 export const createUserSession = async (userId: string, redirectTo: string) => {
