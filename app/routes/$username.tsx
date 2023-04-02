@@ -1,29 +1,35 @@
-import type { Link } from "@prisma/client";
-import type { LoaderFunction} from "@remix-run/node";
+import type { Link as _Link } from "@prisma/client";
+import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { getUserByUsername } from "~/utils/user.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { username } = params;
   if (/^@/.test(username as string)) {
-    const pageUser = await getUserByUsername((username as string).split('@')[1]);
+    const pageUser = await getUserByUsername(
+      (username as string).split("@")[1],
+      false
+    );
     return json(pageUser);
   }
-  return redirect('/error')
+  return redirect("/error");
 };
 
 export default function UserPage() {
-  const pageUser: { id: string; username: string; links: Link[] } =
-    useLoaderData();
+  const { username, links } = useLoaderData();
   return (
     <div className="flex flex-col">
-      <h2 className="text-5xl">@{pageUser.username}</h2>
+      <h2 className="text-5xl">@{username}</h2>
       <ul>
-        {pageUser.links.map((link) => {
+        {links.map((link: _Link) => {
           return (
-            <li key={link.id}><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a></li>
+            <li key={link.id}>
+              <Link to={link.url} target="_blank" rel="noopener noreferrer">
+                {link.title}
+              </Link>
+            </li>
           );
         })}
       </ul>

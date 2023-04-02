@@ -47,7 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json(
       {
         errors,
-        fields: { email, password, confirmPassword, username },
+        fields: { email, password, username },
         form: action,
       },
       { status: 400 }
@@ -60,22 +60,26 @@ export const action: ActionFunction = async ({ request }) => {
       return await register({ email, password, username });
     default:
       return json(
-        { errors: `Invalid form data.`, form: action },
+        {
+          errors: `Invalid form data.`,
+          fields: { email, password, username },
+          form: action,
+        },
         { status: 400 }
       );
   }
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  return (await getUser(request)) ? redirect("/") : null;
+  return (await getUser(request)) ? redirect("/home") : null;
 };
 
 export default function Login() {
   const actionData = useActionData();
   const firstLoad = useRef(true);
   const [formError, setFormError] = useState(actionData?.error);
-  const [errors] = useState(actionData?.errors);
-  const [action, setAction] = useState("login");
+  const [errors, setErrors] = useState(actionData?.errors);
+  const [action, setAction] = useState(actionData?.form);
   const [formData, setFormData] = useState({
     email: actionData?.fields?.email,
     password: actionData?.fields?.password,
@@ -83,19 +87,19 @@ export default function Login() {
     username: actionData?.fields?.username,
   });
 
-  // useEffect(() => {
-  //   if (!firstLoad.current) {
-  //     const newState = {
-  //       email: "",
-  //       password: "",
-  //       confirmPassword: "",
-  //       username: "",
-  //     };
-  //     setErrors(newState);
-  //     setFormError("");
-  //     setFormData(newState);
-  //   }
-  // }, [action]);
+  useEffect(() => {
+    if (!firstLoad.current) {
+      const newState = {
+        email: "",
+        password: "",
+        confirmPassword: "",
+        username: "",
+      };
+      setErrors(newState);
+      setFormData(newState);
+      setFormError("");
+    }
+  }, [action]);
   useEffect(() => {
     if (!firstLoad.current) {
       setFormError("");
@@ -104,12 +108,6 @@ export default function Login() {
   useEffect(() => {
     firstLoad.current = false;
   }, []);
-  // useEffect(() => {
-  //   setErrors(actionData?.errors);
-  // }, [actionData?.errors]);
-  // useEffect(() => {
-  //   setFormError(actionData?.error);
-  // }, [actionData?.error]);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -120,73 +118,75 @@ export default function Login() {
 
   return (
     <Layout>
-      <div className="h-full justify-center items-center flex flex-col gap-y-4">
-        <button
-          onClick={() => setAction(action == "login" ? "register" : "login")}
-          className="absolute top-8 right-8 rounded-xl mt-2 text-gray-100 bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
-        >
-          {action === "login" ? "Sign Up" : "Sign In"}
-        </button>
-        <h2 className="text-5xl font-extrabold text-blue-600">find.me</h2>
-        <p className="font-semibold ">
-          {action === "login"
-            ? "Log in so others can find you!"
-            : "Sign up to get started!"}
-        </p>
+      <div className="bg-slate-200">
+        <div className="h-full justify-center items-center flex flex-col gap-y-4 pt-20">
+          <button
+            onClick={() => setAction(action == "login" ? "register" : "login")}
+            className="absolute top-8 right-8 rounded-xl mt-2 text-slate-100 bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
+          >
+            {action === "login" ? "Sign Up" : "Sign In"}
+          </button>
+          <h2 className="text-5xl font-extrabold text-blue-600 ">find.me</h2>
+          <p className="font-semibold ">
+            {action === "login"
+              ? "Log in so others can find you!"
+              : "Sign up to get started!"}
+          </p>
 
-        <form
-          method="post"
-          className="rounded-2xl bg-slate-300 p-6 w-96 shadow-lg"
-        >
-          <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
-            &nbsp;
-            {formError}
-          </div>
-          <FormField
-            htmlFor="email"
-            label={action === "login" ? "Email/Username" : "Email"}
-            value={formData.email}
-            onChange={(e) => handleInputChange(e, "email")}
-            error={errors?.email}
-          />
-          <FormField
-            htmlFor="password"
-            type="password"
-            label="Password"
-            value={formData.password}
-            onChange={(e) => handleInputChange(e, "password")}
-            error={errors?.password}
-          />
-          {action !== "login" ? (
-            <>
-              <FormField
-                htmlFor="confirmPassword"
-                type="password"
-                label="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={(e) => handleInputChange(e, "confirmPassword")}
-                error={errors?.confirmPassword}
-              />
-              <FormField
-                htmlFor="username"
-                label="Userame"
-                value={formData.username}
-                onChange={(e) => handleInputChange(e, "username")}
-                error={errors?.username}
-              />
-            </>
-          ) : null}
-          <div className="w-full text-center">
-            <button
-              type="submit"
-              name="_action"
-              value={action}
-              className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-gray-100 bg-blue-600 hover:bg-blue-500"
-            >
-              {action === "login" ? "Sign In" : "Sign Up"}
-            </button>
-          </div>
-        </form>
+          <form
+            method="post"
+            className="rounded-2xl bg-slate-300 p-6 w-96 shadow-lg"
+          >
+            <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
+              &nbsp;
+              {formError}
+            </div>
+            <FormField
+              htmlFor="email"
+              label={action === "login" ? "Email/Username" : "Email"}
+              value={formData.email}
+              onChange={(e) => handleInputChange(e, "email")}
+              error={errors?.email}
+            />
+            <FormField
+              htmlFor="password"
+              type="password"
+              label="Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange(e, "password")}
+              error={errors?.password}
+            />
+            {action !== "login" ? (
+              <>
+                <FormField
+                  htmlFor="confirmPassword"
+                  type="password"
+                  label="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => handleInputChange(e, "confirmPassword")}
+                  error={errors?.confirmPassword}
+                />
+                <FormField
+                  htmlFor="username"
+                  label="Userame"
+                  value={formData.username}
+                  onChange={(e) => handleInputChange(e, "username")}
+                  error={errors?.username}
+                />
+              </>
+            ) : null}
+            <div className="w-full text-center">
+              <button
+                type="submit"
+                name="_action"
+                value={action}
+                className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-slate-100 bg-blue-600 hover:bg-blue-500"
+              >
+                {action === "login" ? "Sign In" : "Sign Up"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </Layout>
   );

@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("Environment variable SESSION_SECRET must be set.");
-};
+}
 
 const storage = createCookieSessionStorage({
   cookie: {
@@ -27,10 +27,10 @@ export const register = async (form: RegisterForm) => {
   });
   if (emailExists) {
     return json(
-      { error: `User already exists with that email.` },
+      { error: `User already exists with that email.`, fields: { ...form } },
       { status: 400 }
     );
-  };
+  }
   const usernameExists = await prisma.user.count({
     where: { username: { equals: form.username, mode: "insensitive" } },
   });
@@ -39,25 +39,23 @@ export const register = async (form: RegisterForm) => {
       { error: `User already exists with that username.` },
       { status: 400 }
     );
-  };
+  }
   const newUser = await createUser(form);
   if (!newUser) {
     return json(
       {
         error: `Something went wrong trying to create new user.`,
         fields: {
-          email: form.email,
-          password: form.password,
-          username: form.username,
-        },
+          ...form
+        }, form: "register"
       },
       {
         status: 400,
       }
     );
-  };
+  }
 
-  return createUserSession(newUser.id, "/");
+  return createUserSession(newUser.id, "/home");
 };
 
 export const login = async (form: LoginForm) => {
@@ -66,11 +64,14 @@ export const login = async (form: LoginForm) => {
     condition = { email: { equals: form.email, mode: "insensitive" } };
   } else {
     condition = { username: { equals: form.username, mode: "insensitive" } };
-  };
+  }
   const user = (await prisma.user.findMany({ where: condition }))[0];
   if (!user || !(await bcrypt.compare(form.password, user.password))) {
-    return json({ error: `Incorrect login` }, { status: 400 });
-  };
+    return json(
+      { error: `Incorrect login`, fields: { ...form }, form: "login" },
+      { status: 400 }
+    );
+  }
   return createUserSession(user.id, "/");
 };
 
@@ -84,33 +85,35 @@ export const createUserSession = async (userId: string, redirectTo: string) => {
   });
 };
 
-export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {
+export async function requireUserId(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
   const session = await getUserSession(request);
-  const userId = session.get('userId');
-  if (!userId || typeof userId !== 'string') {
-    const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
+  const userId = session.get("userId");
+  if (!userId || typeof userId !== "string") {
+    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
-  };
-  console.log(userId)
+  }
   return userId;
 }
 
 function getUserSession(request: Request) {
-  return storage.getSession(request.headers.get('Cookie'));
-};
+  return storage.getSession(request.headers.get("Cookie"));
+}
 
 export async function getUserId(request: Request) {
   const session = await getUserSession(request);
-  const userId = session.get('userId');
-  if (!userId || typeof userId !== 'string') return null;
+  const userId = session.get("userId");
+  if (!userId || typeof userId !== "string") return null;
   return userId;
 }
 
 export async function getUser(request: Request) {
   const userId = await getUserId(request);
-  if (typeof userId !== 'string') {
+  if (typeof userId !== "string") {
     return null;
-  };
+  }
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -119,14 +122,17 @@ export async function getUser(request: Request) {
     return user;
   } catch {
     throw logout(request);
-  };
-};
+  }
+}
 
-export async function logout(request: Request) {
+export async function logout(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
   const session = await getUserSession(request);
-  return redirect('/login', {
+  return redirect(redirectTo, {
     headers: {
-      'Set-Cookie': await storage.destroySession(session),
+      "Set-Cookie": await storage.destroySession(session),
     },
   });
-};
+}
