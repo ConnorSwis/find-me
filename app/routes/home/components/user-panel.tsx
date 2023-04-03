@@ -1,4 +1,5 @@
 import type { User } from "@prisma/client";
+import { Link } from "@remix-run/react";
 import SignOutButton from "~/components/sign-out-button";
 
 export function UserPanel({ users }: { users: User[] }) {
@@ -7,9 +8,9 @@ export function UserPanel({ users }: { users: User[] }) {
       <div className="text-center bg-slate-300 h-20 flex items-center justify-center">
         <h2 className="text-xl text-blue-600 font-semibold">My Team</h2>
       </div>
-      <div className="flex-1 overflow-y-scroll p-4 flex flex-col gap-y-10">
+      <div className="flex-1 overflow-y-scroll p-4 flex flex-col gap-y-10 text-blue-600 hover:text-blue-800">
         {users.map((user) => {
-          return <p key={user.id}>{user.username}</p>;
+          return <Link to={`/@${user.username}`} key={user.id}>{user.username}</Link>;
         })}
       </div>
       <div className="text-center p-6 bg-slate-300">
