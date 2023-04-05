@@ -1,7 +1,7 @@
 import type { IsValid } from "./types.server";
 
 const hasLength = (fieldText: string, atLeast: number = 1) => {
-  return fieldText.length >= atLeast;
+  return fieldText?.length >= atLeast;
 };
 
 const atMost = (fieldText: string, _atMost: number = 32) => {
@@ -19,12 +19,6 @@ const isEmail = (fieldText: string) => {
     return emailRegex.test(fieldText);
   }
   return false;
-};
-
-const isUrl = (fieldText: string) => {
-  let urlRegex =
-    /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)/;
-  return urlRegex.test(fieldText);
 };
 
 export const validateEmail = (email: string): IsValid => {
@@ -61,7 +55,12 @@ export const validateUsername = (username: string): IsValid => {
 export const validateNewLinkTitle = (newTitle: string) => {
   if (!hasLength(newTitle)) return "Please enter a value.";
 };
-export const validateNewLinkUrl = (newUrl: string) => {
+export const validateUrl = (newUrl: string) => {
   if (!hasLength(newUrl)) return "Please enter a value.";
-  if (!isUrl(newUrl)) return "Enter valid url.";
+  try {
+    new URL(newUrl);
+    return;
+  } catch {
+  }
+  return "Enter valid url.";
 };

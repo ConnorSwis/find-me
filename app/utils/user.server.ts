@@ -12,9 +12,10 @@ export const createUser = async (user: RegisterForm) => {
       password: passwordHash,
       username: user.username,
     },
+    select: { id: true, email: true, username: true, links: true },
   });
 
-  return { id: newUser.id, email: user.email };
+  return newUser;
 };
 
 export const getOtherUsers = async (userId: string) => {
@@ -26,6 +27,7 @@ export const getOtherUsers = async (userId: string) => {
       orderBy: {
         username: "asc",
       },
+      select: { id: true, email: true, username: true, links: true },
     });
   }
 };
@@ -48,6 +50,13 @@ export const getUserByUsername = async (
 
 export const getUserById = async (userId: string) => {
   return await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, username: true, links: true },
+  });
+};
+
+export const deleteUser = async (userId: string) => {
+  return await prisma.user.delete({
     where: { id: userId },
     select: { id: true, email: true, username: true, links: true },
   });

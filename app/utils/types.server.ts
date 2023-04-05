@@ -10,7 +10,7 @@ export interface LoginForm {
   username: string;
 };
 
-export interface NewLinkForm {
+export interface NewLinkFormType {
   title: string;
   url: string;
   authorId: string

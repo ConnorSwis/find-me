@@ -1,6 +1,6 @@
 import type { User } from "@prisma/client";
 import { prisma } from "./prisma.server";
-import type { NewLinkForm } from "./types.server";
+import type { NewLinkFormType } from "./types.server";
 
 export async function getLinks(userId: string): Promise<User | null> {
   return await prisma.user.findUnique({
@@ -13,13 +13,21 @@ export async function getLinks(userId: string): Promise<User | null> {
   });
 }
 
-export async function addLink(newLink: NewLinkForm) {
+export async function addLink(newLink: NewLinkFormType) {
   const { title, url, authorId } = newLink;
   return await prisma.link.create({
     data: {
       title: title,
       url: url,
       author: { connect: { id: authorId } },
+    },
+  });
+}
+
+export async function deleteLink(linkId: string) {
+  return await prisma.link.delete({
+    where: {
+      id: linkId,
     },
   });
 }
