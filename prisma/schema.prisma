@@ -19,7 +19,7 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   links         Link[]
-  theme         Theme
+  theme         Theme?
 }
 
 model Link {
