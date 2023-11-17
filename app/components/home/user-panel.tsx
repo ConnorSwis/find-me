@@ -10,7 +10,15 @@ export function UserPanel({ users }: { users: User[] }) {
       </div>
       <div className="flex-1 overflow-y-scroll p-4 flex flex-col">
         {users.map((user) => {
-          return <Link to={`/@${user.username}`} key={user.id} className="text-blue-600 rounded-md p-3 hover:bg-slate-300">&nbsp;{user.username}</Link>;
+          return (
+            <Link
+              to={`/@${user.username}`}
+              key={user.id}
+              className="text-blue-600 rounded-md p-3 transition duration-100 ease-out hover:bg-slate-300"
+            >
+              {user.username}
+            </Link>
+          );
         })}
       </div>
       <div className="text-center p-6 bg-slate-300">

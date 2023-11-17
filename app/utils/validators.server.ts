@@ -57,10 +57,11 @@ export const validateNewLinkTitle = (newTitle: string) => {
 };
 export const validateUrl = (newUrl: string) => {
   if (!hasLength(newUrl)) return "Please enter a value.";
+  if (!/^.*\..+$/.test(newUrl)) return "Please enter valid URL."
   try {
     new URL(newUrl);
     return;
   } catch {
   }
-  return "Enter valid url.";
+  return "Please enter valid url.";
 };

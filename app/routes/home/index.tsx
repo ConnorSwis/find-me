@@ -1,15 +1,15 @@
-import type { Link as _Link } from "@prisma/client";
-import type { LoaderFunction, ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Layout } from "~/components/layout";
-import { UserPanel } from "~/routes/home/components/user-panel";
-import { getUser, requireUserId } from "~/utils/auth.server";
-import { addLink, deleteLink } from "~/utils/link.server";
+import type { Link as _Link } from "@prisma/client";
 import type { IsValid } from "~/utils/types.server";
 import { getOtherUsers } from "~/utils/user.server";
+import { addLink, deleteLink } from "~/utils/link.server";
+import { getUser, requireUserId } from "~/utils/auth.server";
+import type { LoaderFunction, ActionFunction } from "@remix-run/node";
+import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { validateNewLinkTitle, validateUrl } from "~/utils/validators.server";
+import Logo from "~/components/logo";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
@@ -67,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Home() {
-  const { users, user } = useLoaderData();
+  const { user } = useLoaderData();
 
   let formRef = useRef<HTMLFormElement>(null);
   let titleRef = useRef<HTMLInputElement>(null);
@@ -85,76 +85,79 @@ export default function Home() {
   }, [isCreating]);
   return (
     <Layout>
-      <div className="h-full flex">
-        <UserPanel users={users} />
-        <div className="p-10 flex flex-wrap justify-center bg-slate-200">
-          <h1 className="text-5xl w-full">
-            Welcome back,{" "}
+      <div className="flex flex-col w-full min-h-screen p-8">
+        <div className="flex justify-between items-center">
+          <Logo />
+          <div className="p-10 flex flex-wrap flex-col justify-center">
             <Link to={"/@" + user.username} className="text-blue-500">
-              @{user.username}
+              <h1 className="text-5xl w-ful text-center pb-6">
+                @{user.username}
+              </h1>
             </Link>
-          </h1>
-          <ul className="flex flex-col">
-            {user.links?.map((link: _Link) => {
-              return link.url ? (
-                <li
-                  style={{
-                    opacity:
-                      transition.formData?.get("linkId") === link.id ? 0.25 : 1,
-                  }}
-                  className="flex justify-between transition duration-100 ease-out hover:bg-slate-300 p-1 m-1 px-2 rounded-md"
-                  key={link.id}
-                >
-                  {link.title}
-                  <Link to={link.url} target="_blank">
-                    {link.url}
-                  </Link>
-                  <Form replace method="post">
-                    <input name="linkId" type="hidden" value={link.id} />
-                    <button
-                      type="submit"
-                      className="bg-red-600 text-white font-bold px-2 pb-1 rounded-full "
-                      name="_action"
-                      value="delete"
-                    >
-                      x
-                    </button>
-                  </Form>
-                </li>
-              ) : null;
-            })}
-            <li>
-              <Form
-                ref={formRef}
-                action="/home"
-                method="post"
-                className="bg-slate-300 p-3 rounded-md"
-              >
-                <input
-                  type="text"
-                  name="title"
-                  ref={titleRef}
-                  placeholder="Title"
-                  className="px-2"
-                />{" "}
-                <input
-                  type="text"
-                  name="url"
-                  placeholder="Link"
-                  className="px-2"
-                />{" "}
-                <button
-                  type="submit"
-                  name="_action"
-                  value="create"
-                  className="bg-blue-500 text-slate-100 font-bold text-xl rounded-full px-3 pb-1 "
-                >
-                  {isCreating ? <p className="animate-spin">+</p> : "+"}
-                </button>
-              </Form>
-            </li>
-          </ul>
+          </div>
         </div>
+        <ul className="flex flex-col">
+          {user.links?.map((link: _Link) => {
+            return link.url ? (
+              <li
+                style={{
+                  opacity:
+                    transition.formData?.get("linkId") === link.id ? 0.25 : 1,
+                }}
+                className="flex justify-between transition duration-100 ease-out hover:bg-slate-300 p-1 m-1 px-2 rounded-md"
+                key={link.id}
+              >
+                {link.title}
+                <Link to={link.url} target="_blank">
+                  {link.url}
+                </Link>
+                <Form replace method="post">
+                  <input name="linkId" type="hidden" value={link.id} />
+                  <button
+                    type="submit"
+                    className="bg-red-600 text-white font-bold px-2 pb-1 rounded-full "
+                    name="_action"
+                    value="delete"
+                  >
+                    x
+                  </button>
+                </Form>
+              </li>
+            ) : null;
+          })}
+          <li>
+            <Form
+              ref={formRef}
+              action="/home"
+              method="post"
+              className="bg-slate-300 p-3 rounded-md"
+              style={{ opacity: isCreating ? 0.25 : 1 }}
+            >
+              <input
+                type="text"
+                name="title"
+                ref={titleRef}
+                placeholder="Title"
+                className="px-2"
+              />{" "}
+              <input
+                type="text"
+                name="url"
+                placeholder="Link"
+                className="px-2"
+              />{" "}
+              <button
+                type="submit"
+                name="_action"
+                value="create"
+                className="bg-blue-500 text-slate-100 font-bold text-xl rounded-full px-3 pb-1 "
+              >
+                {" "}
+                <p>+</p>
+              </button>
+            </Form>
+          </li>
+        </ul>
       </div>
     </Layout>
   );

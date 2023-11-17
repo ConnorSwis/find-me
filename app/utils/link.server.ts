@@ -31,3 +31,7 @@ export async function deleteLink(linkId: string) {
     },
   });
 }
+
+export async function getLinkById(linkId: string) {
+  return await prisma.link.findUnique({ where: { id: linkId } });
+}

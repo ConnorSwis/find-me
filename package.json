@@ -5,7 +5,9 @@
     "build": "remix build",
     "dev": "remix dev",
     "typecheck": "tsc",
-    "tailwind": "tailwind -w app/tailwind.css -o public/tailwind.css"
+    "tailwind": "tailwind -w app/tailwind.css -o public/tailwind.css",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
@@ -32,7 +34,7 @@
     "eslint": "^8.27.0",
     "postcss": "^8.4.21",
     "prisma": "^4.11.0",
-    "tailwindcss": "^3.2.7",
+    "tailwindcss": "^3.3.5",
     "typescript": "^4.8.4"
   },
   "engines": {
