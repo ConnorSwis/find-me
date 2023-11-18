@@ -119,29 +119,31 @@ export default function Login() {
 
   return (
     <Layout>
-      <div className="bg-slate-200">
-        <div className="h-full justify-center items-center flex flex-col gap-y-4 pt-20">
-          <button
-            onClick={() => setAction(action == "login" ? "register" : "login")}
-            className="absolute top-8 right-8 rounded-xl mt-2 text-slate-100 bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
-          >
-            {action === "login" ? "Sign Up" : "Sign In"}
-          </button>
-          <h2><Logo /></h2>
-          <p className="font-semibold ">
+      <div className="h-full w-full justify-center items-center flex flex-col gap-y-4 -mt-20">
+        <button
+          onClick={() => setAction(action == "login" ? "register" : "login")}
+          className="absolute top-8 right-8 rounded-xl mt-2 text-white bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
+        >
+          {action === "login" ? "Sign Up" : "Sign In"}
+        </button>
+
+        <form
+          method="post"
+          className="rounded-2xl max-w-2xl w-full bg-zinc-800 p-6 "
+        >
+          <div className="flex w-full justify-center">
+            <Logo />
+          </div>
+          <p className="font-semibold w-full text-center text-white pt-2 -mb-5">
             {action === "login"
               ? "Log in so others can find you!"
               : "Sign up to get started!"}
           </p>
-
-          <form
-            method="post"
-            className="rounded-2xl bg-slate-300 p-6 w-96 shadow-lg"
-          >
-            <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
-              &nbsp;
-              {formError}
-            </div>
+          <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
+            &nbsp;
+            {formError}
+          </div>
+          <div className="flex flex-col gap-2 w-full items-center justify-center">
             <FormField
               htmlFor="email"
               label={action === "login" ? "Email/Username" : "Email"}
@@ -176,18 +178,18 @@ export default function Login() {
                 />
               </>
             ) : null}
-            <div className="w-full text-center">
-              <button
-                type="submit"
-                name="_action"
-                value={action}
-                className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-slate-100 bg-blue-600 hover:bg-blue-500"
-              >
-                {action === "login" ? "Sign In" : "Sign Up"}
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="w-full text-center">
+            <button
+              type="submit"
+              name="_action"
+              value={action}
+              className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-slate-100 bg-blue-600 hover:bg-blue-500"
+            >
+              {action === "login" ? "Sign In" : "Sign Up"}
+            </button>
+          </div>
+        </form>
       </div>
     </Layout>
   );

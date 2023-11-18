@@ -2,6 +2,7 @@ import { json } from "@remix-run/node";
 import { useEffect, useRef } from "react";
 import { Layout } from "~/components/layout";
 import type { Link as _Link } from "@prisma/client";
+import colors from "tailwindcss/colors";
 import type { IsValid } from "~/utils/types.server";
 import { getOtherUsers } from "~/utils/user.server";
 import { addLink, deleteLink } from "~/utils/link.server";
@@ -85,7 +86,7 @@ export default function Home() {
   }, [isCreating]);
   return (
     <Layout>
-      <div className="flex flex-col w-full min-h-screen p-8">
+      <div className="flex flex-col w-full max-w-4xl min-h-screen p-8">
         <div className="flex justify-between items-center">
           <Logo />
           <div className="p-10 flex flex-wrap flex-col justify-center">
@@ -97,14 +98,17 @@ export default function Home() {
           </div>
         </div>
         <ul className="flex flex-col">
-          {user.links?.map((link: _Link) => {
+          {user.links?.map((link: _Link, index: number) => {
             return link.url ? (
               <li
                 style={{
                   opacity:
                     transition.formData?.get("linkId") === link.id ? 0.25 : 1,
                 }}
-                className="flex justify-between transition duration-100 ease-out hover:bg-slate-300 p-1 m-1 px-2 rounded-md"
+                className={
+                  "flex justify-between transition duration-100 ease-out hover:bg-zinc-600 p-2  px-2  " +
+                  (index % 2 == 0 ? "bg-white bg-opacity-20" : "")
+                }
                 key={link.id}
               >
                 {link.title}
@@ -115,7 +119,7 @@ export default function Home() {
                   <input name="linkId" type="hidden" value={link.id} />
                   <button
                     type="submit"
-                    className="bg-red-600 text-white font-bold px-2 pb-1 rounded-full "
+                    className="bg-red-600 text-white font-bold px-2 pb-1  "
                     name="_action"
                     value="delete"
                   >
@@ -130,7 +134,7 @@ export default function Home() {
               ref={formRef}
               action="/home"
               method="post"
-              className="bg-slate-300 p-3 rounded-md"
+              className="bg-zinc-800 p-3  flex justify-between gap-6"
               style={{ opacity: isCreating ? 0.25 : 1 }}
             >
               <input
@@ -138,19 +142,19 @@ export default function Home() {
                 name="title"
                 ref={titleRef}
                 placeholder="Title"
-                className="px-2"
+                className="px-2 outline-none p-2 bg-zinc-900 text-white w-full"
               />{" "}
               <input
                 type="text"
                 name="url"
                 placeholder="Link"
-                className="px-2"
+                className="px-2 outline-none p-2 bg-zinc-900 text-white w-full"
               />{" "}
               <button
                 type="submit"
                 name="_action"
                 value="create"
-                className="bg-blue-500 text-slate-100 font-bold text-xl rounded-full px-3 pb-1 "
+                className="bg-blue-500 text-white font-bold text-xl  px-3 pb-1 "
               >
                 {" "}
                 <p>+</p>

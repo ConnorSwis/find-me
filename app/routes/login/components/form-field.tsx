@@ -22,7 +22,7 @@ export function FormField({
     setErrorText(error);
   }, [error]);
   return (
-    <>
+    <div className="inline-flex flex-col max-w-sm w-full ">
       <label htmlFor={htmlFor} className="text-blue-600 font-semibold">
         {label}
       </label>
@@ -34,13 +34,13 @@ export function FormField({
         type={type}
         id={htmlFor}
         name={htmlFor}
-        className="w-full p-2 rounded-xl my-2 border-2 border-slate-300 bg-slate-200 shadow-inner focus:border-blue-500"
+        className="w-full p-4 rounded-xl my-2 bg-zinc-900 outline-none text-white focus:border-blue-500"
         value={value}
       />
       <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
         &nbsp;
         {errorText || ""}
       </div>
-    </>
+    </div>
   );
 }
