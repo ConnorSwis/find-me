@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
   };
 
   if (action === "login") {
-    if (errors.email) {
+    if (errors.email.length > 0) {
       username = email;
       email = "";
       errors.email = validateUsername(username);
@@ -42,8 +42,8 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (
     Object.values(errors).filter((value: IsValid) => {
-      return value;
-    }).length
+      return value.length > 0;
+    }).length > 0
   ) {
     return json(
       {
@@ -78,14 +78,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Login() {
   const actionData = useActionData();
   const firstLoad = useRef(true);
-  const [formError, setFormError] = useState(actionData?.error);
+  const [formError, setFormError] = useState(actionData?.error ?? "");
   const [errors, setErrors] = useState(actionData?.errors);
   const [action, setAction] = useState(actionData?.form || "login");
   const [formData, setFormData] = useState({
-    email: actionData?.fields?.email,
-    password: actionData?.fields?.password,
-    confirmPassword: actionData?.fields?.confirmPassword,
-    username: actionData?.fields?.username,
+    email: actionData?.fields?.email ?? "",
+    password: actionData?.fields?.password ?? "",
+    confirmPassword: actionData?.fields?.confirmPassword ?? "",
+    username: actionData?.fields?.username ?? "",
   });
 
   useEffect(() => {
@@ -100,12 +100,14 @@ export default function Login() {
       setFormData(newState);
       setFormError("");
     }
-  }, [action]);
+  }, []);
+
   useEffect(() => {
     if (!firstLoad.current) {
       setFormError("");
     }
   }, [formData]);
+
   useEffect(() => {
     firstLoad.current = false;
   }, []);
@@ -119,77 +121,83 @@ export default function Login() {
 
   return (
     <Layout>
-      <div className="h-full w-full justify-center items-center flex flex-col gap-y-4 -mt-20">
+      <div className="flex flex-col items-center justify-center w-full h-full p-3 -mt-20 gap-y-4">
         <button
           onClick={() => setAction(action == "login" ? "register" : "login")}
-          className="absolute top-8 right-8 rounded-xl mt-2 text-white bg-blue-600 px-3 py-2 font-semibold transition duration-100 ease-in-out hover:bg-blue-500"
+          className="absolute px-3 py-2 mt-2 font-semibold text-white transition duration-100 ease-in bg-blue-600 rounded-md top-8 right-8 hover:bg-blue-500"
         >
           {action === "login" ? "Sign Up" : "Sign In"}
         </button>
 
-        <form
-          method="post"
-          className="rounded-2xl max-w-2xl w-full bg-zinc-800 p-6 "
-        >
-          <div className="flex w-full justify-center">
-            <Logo />
-          </div>
-          <p className="font-semibold w-full text-center text-white pt-2 -mb-5">
-            {action === "login"
-              ? "Log in so others can find you!"
-              : "Sign up to get started!"}
-          </p>
-          <div className="text-sm font-semibold text-center tracking-wide text-blue-500 w-full pb-2">
-            &nbsp;
-            {formError}
-          </div>
-          <div className="flex flex-col gap-2 w-full items-center justify-center">
-            <FormField
-              htmlFor="email"
-              label={action === "login" ? "Email/Username" : "Email"}
-              value={formData.email}
-              onChange={(e) => handleInputChange(e, "email")}
-              error={errors?.email}
-            />
-            <FormField
-              htmlFor="password"
-              type="password"
-              label="Password"
-              value={formData.password}
-              onChange={(e) => handleInputChange(e, "password")}
-              error={errors?.password}
-            />
-            {action !== "login" ? (
-              <>
-                <FormField
-                  htmlFor="confirmPassword"
-                  type="password"
-                  label="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange(e, "confirmPassword")}
-                  error={errors?.confirmPassword}
-                />
-                <FormField
-                  htmlFor="username"
-                  label="Userame"
-                  value={formData.username}
-                  onChange={(e) => handleInputChange(e, "username")}
-                  error={errors?.username}
-                />
-              </>
-            ) : null}
-          </div>
-          <div className="w-full text-center">
-            <button
-              type="submit"
-              name="_action"
-              value={action}
-              className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-slate-100 bg-blue-600 hover:bg-blue-500"
+        <div className="w-full max-w-2xl p-6 px-24 rounded-md">
+          <Logo />
+
+          <form
+            method="post"
+            className="flex flex-col items-center justify-center w-full mt-4"
+          >
+            <p className="w-full p-1 font-semibold text-center text-white">
+              {action === "login"
+                ? "Log in so others can find you!"
+                : "Sign up to get started!"}
+            </p>
+
+            <p
+              className={
+                "w-full p-2 text-sm text-center text-red-500 " +
+                (formError.length > 0 ? "opacity-100" : "opacity-0")
+              }
             >
-              {action === "login" ? "Sign In" : "Sign Up"}
-            </button>
-          </div>
-        </form>
+              {formError.length > 0 ? formError : "."}
+            </p>
+            <div className="flex flex-col items-center justify-center w-full gap-2">
+              <FormField
+                htmlFor="email"
+                label={action === "login" ? "Email/Username" : "Email"}
+                value={formData.email}
+                onChange={(e) => handleInputChange(e, "email")}
+                error={errors?.email}
+              />
+              <FormField
+                htmlFor="password"
+                type="password"
+                label="Password"
+                value={formData.password}
+                onChange={(e) => handleInputChange(e, "password")}
+                error={errors?.password}
+              />
+              {action !== "login" ? (
+                <>
+                  <FormField
+                    htmlFor="confirmPassword"
+                    type="password"
+                    label="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange(e, "confirmPassword")}
+                    error={errors?.confirmPassword}
+                  />
+                  <FormField
+                    htmlFor="username"
+                    label="Userame"
+                    value={formData.username}
+                    onChange={(e) => handleInputChange(e, "username")}
+                    error={errors?.username}
+                  />
+                </>
+              ) : null}
+            </div>
+            <div className="w-full text-center">
+              <button
+                type="submit"
+                name="_action"
+                value={action}
+                className="px-3 py-2 mt-2 font-semibold transition duration-100 ease-in-out bg-blue-600 rounded-xl text-slate-100 hover:bg-blue-500"
+              >
+                {action === "login" ? "Sign In" : "Sign Up"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </Layout>
   );

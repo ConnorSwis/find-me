@@ -5,7 +5,7 @@ export default function SignOutButton({ children }: { children?: ReactNode }) {
     <form action="/logout" method="post">
       <button
         type="submit"
-        className="rounded-xl mt-2 px-3 py-2 font-semibold transition duration-100 ease-in-out text-slate-100 bg-blue-600 hover:bg-blue-500"
+        className="absolute p-3 px-3 py-2 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow top-6 right-6 transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300"
       >
         Sign Out
       </button>

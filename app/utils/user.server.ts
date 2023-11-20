@@ -8,9 +8,9 @@ export const createUser = async (user: RegisterForm) => {
 
   const newUser = await prisma.user.create({
     data: {
-      email: user.email,
+      email: user.email.toLowerCase(),
       password: passwordHash,
-      username: user.username,
+      username: user.username.toLowerCase(),
     },
     select: { id: true, email: true, username: true, links: true },
   });

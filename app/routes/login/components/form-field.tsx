@@ -22,8 +22,8 @@ export function FormField({
     setErrorText(error);
   }, [error]);
   return (
-    <div className="inline-flex flex-col max-w-sm w-full ">
-      <label htmlFor={htmlFor} className="text-blue-600 font-semibold">
+    <div className="inline-flex flex-col w-full max-w-sm ">
+      <label htmlFor={htmlFor} className="font-semibold text-blue-600">
         {label}
       </label>
       <input
@@ -34,10 +34,10 @@ export function FormField({
         type={type}
         id={htmlFor}
         name={htmlFor}
-        className="w-full p-4 rounded-xl my-2 bg-zinc-900 outline-none text-white focus:border-blue-500"
+        className="w-full p-4 my-2 text-white outline-none rounded-xl bg-zinc-900 focus:border-blue-500"
         value={value}
       />
-      <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
+      <div className="w-full text-xs font-semibold tracking-wide text-center text-red-500">
         &nbsp;
         {errorText || ""}
       </div>

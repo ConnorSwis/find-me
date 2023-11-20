@@ -35,7 +35,7 @@ export const action: ActionFunction = async ({ request }) => {
       errors.url = validateUrl(`https://${url}`);
       if (!errors.url) {
         url = `https://${url}`;
-        errors.url = undefined;
+        errors.url = "";
       }
     }
     if (
@@ -85,19 +85,15 @@ export default function Home() {
     }
   }, [isCreating]);
   return (
-    <Layout>
-      <div className="flex flex-col w-full max-w-4xl min-h-screen p-8">
-        <div className="flex justify-between items-center">
+    <Layout isSignedIn={!!user}>
+      <div className="flex flex-col justify-center w-full max-w-4xl min-h-screen p-8 -mt-20">
+        <div className="flex items-center justify-between">
           <Logo />
-          <div className="p-10 flex flex-wrap flex-col justify-center">
-            <Link to={"/@" + user.username} className="text-blue-500">
-              <h1 className="text-5xl w-ful text-center pb-6">
-                @{user.username}
-              </h1>
-            </Link>
-          </div>
+          <Link to={"/@" + user.username} className="text-blue-600">
+            <h1 className="text-5xl text-center w-ful">@{user.username}</h1>
+          </Link>
         </div>
-        <ul className="flex flex-col">
+        <ul className="flex flex-col gap-2 p-2 mt-10 text-white bg-black bg-opacity-10">
           {user.links?.map((link: _Link, index: number) => {
             return link.url ? (
               <li
@@ -106,8 +102,8 @@ export default function Home() {
                     transition.formData?.get("linkId") === link.id ? 0.25 : 1,
                 }}
                 className={
-                  "flex justify-between transition duration-100 ease-out hover:bg-zinc-600 p-2  px-2  " +
-                  (index % 2 == 0 ? "bg-white bg-opacity-20" : "")
+                  "flex justify-between transition duration-100 ease-out bg-black  p-2  px-2  " +
+                  (index % 2 === 0 ? "bg-opacity-30" : "bg-opacity-20")
                 }
                 key={link.id}
               >
@@ -119,7 +115,7 @@ export default function Home() {
                   <input name="linkId" type="hidden" value={link.id} />
                   <button
                     type="submit"
-                    className="bg-red-600 text-white font-bold px-2 pb-1  "
+                    className="px-2 pb-1 font-bold text-white bg-red-600 "
                     name="_action"
                     value="delete"
                   >
@@ -134,7 +130,7 @@ export default function Home() {
               ref={formRef}
               action="/home"
               method="post"
-              className="bg-zinc-800 p-3  flex justify-between gap-6"
+              className="flex justify-between gap-6 p-3 bg-zinc-800"
               style={{ opacity: isCreating ? 0.25 : 1 }}
             >
               <input
@@ -142,19 +138,19 @@ export default function Home() {
                 name="title"
                 ref={titleRef}
                 placeholder="Title"
-                className="px-2 outline-none p-2 bg-zinc-900 text-white w-full"
+                className="w-full p-2 px-2 text-white outline-none bg-zinc-900"
               />{" "}
               <input
                 type="text"
                 name="url"
                 placeholder="Link"
-                className="px-2 outline-none p-2 bg-zinc-900 text-white w-full"
+                className="w-full p-2 px-2 text-white outline-none bg-zinc-900"
               />{" "}
               <button
                 type="submit"
                 name="_action"
                 value="create"
-                className="bg-blue-500 text-white font-bold text-xl  px-3 pb-1 "
+                className="px-3 pb-1 text-xl font-bold text-white bg-blue-500 "
               >
                 {" "}
                 <p>+</p>
