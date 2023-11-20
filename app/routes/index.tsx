@@ -5,6 +5,7 @@ import { Layout } from "~/components/layout";
 import { getUser } from "~/utils/auth.server";
 import SignOutButton from "../components/sign-out-button";
 import { RiGithubFill } from "react-icons/ri";
+import Logo from "~/components/logo";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return json(await getUser(request));
@@ -14,25 +15,14 @@ export default function Index() {
   const user = useLoaderData();
   return (
     <Layout>
-      <div className="flex flex-col justify-center items-center pt-10">
-        <h1 className="text-6xl bg-blue-600 text-slate-200 rounded-lg p-3 mt-10 mb-3">
-          Find.Me
-        </h1>
-        <div className="flex flex-col justify-center items-center gap-8">
-          <div className="flex flex-col justify-center items-center">
-            <p>Created by Connor J. Swislow</p>
-            <Link to="https://github.com/ConnorSwis/find-me" target="_blank">
-              <div className="flex justify-center items-center gap-1 text-gray-800 hover:underline hover:text-blue-700">
-                Project on Github
-                <RiGithubFill />
-              </div>
-            </Link>
-          </div>
+      <div className="flex flex-col items-center justify-center gap-8 p-6 -mt-16 rounded-md bg-zinc-900">
+        <Logo />
+        <div className="flex flex-col items-center justify-center gap-8">
           {user ? (
-            <div className="flex flex-col justify-center items-center gap-1">
+            <div className="flex flex-col items-center justify-center gap-1">
               <Link
                 to="/home"
-                className="text-xl font-bold text-blue-500 hover:text-blue-700"
+                className="p-3 px-5 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 "
               >
                 Home
               </Link>
@@ -45,11 +35,20 @@ export default function Index() {
           ) : (
             <Link
               to="/login"
-              className="text-xl font-bold text-blue-500 hover:text-blue-700"
+              className="p-3 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300"
             >
               Login or Signup
             </Link>
           )}
+          <div className="flex flex-col items-center justify-center text-sm text-white">
+            <p>Created by ConnorSwis</p>
+            <Link to="https://github.com/ConnorSwis/find-me" target="_blank">
+              <div className="flex items-center justify-center gap-2 text-gray-200 hover:underline hover:text-blue-700">
+                Project on Github
+                <RiGithubFill />
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </Layout>

@@ -23,18 +23,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function UserPage() {
   const { username, links } = useLoaderData<typeof loader>();
   return (
-    <div className="flex flex-col justify-start items-center w-full max-w-4xl outline mx-auto min-h-screen p-24">
+    <div className="flex flex-col items-center justify-start w-full max-w-4xl min-h-screen p-24 mx-auto outline">
       <button className="absolute top-8 left-8">
         <Link to="/home">
           <Logo />
         </Link>
       </button>
-      <div className="flex flex-col justify-center items-center p-12 gap-6">
+      <div className="flex flex-col items-center justify-center gap-6 p-12">
         <h2 className="text-5xl ">@{username}</h2>
         <ul>
           {links.map((link: _Link) => {
             return (
-              <li key={link.id} className="text-lg flex gap-2">
+              <li key={link.id} className="flex gap-2 text-lg">
                 -{" "}
                 <Link
                   to={link.url}

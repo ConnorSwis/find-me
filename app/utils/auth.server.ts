@@ -22,8 +22,9 @@ const storage = createCookieSessionStorage({
 });
 
 export const register = async (form: RegisterForm) => {
+  const { email, username } = form;
   const emailExists = await prisma.user.count({
-    where: { email: { equals: form.email, mode: "insensitive" } },
+    where: { email: email.toLowerCase() },
   });
   if (emailExists) {
     return json(
@@ -32,7 +33,7 @@ export const register = async (form: RegisterForm) => {
     );
   }
   const usernameExists = await prisma.user.count({
-    where: { username: { equals: form.username, mode: "insensitive" } },
+    where: { username: username.toLowerCase() },
   });
   if (usernameExists) {
     return json(
@@ -46,8 +47,9 @@ export const register = async (form: RegisterForm) => {
       {
         error: `Something went wrong trying to create new user.`,
         fields: {
-          ...form
-        }, form: "register"
+          ...form,
+        },
+        form: "register",
       },
       {
         status: 400,
@@ -59,14 +61,26 @@ export const register = async (form: RegisterForm) => {
 };
 
 export const login = async (form: LoginForm) => {
+  const { email, password, username } = form;
   let condition = {};
-  if (form.email) {
-    condition = { email: { equals: form.email, mode: "insensitive" } };
+  if (email) {
+    condition = { email: email.toLowerCase() };
   } else {
-    condition = { username: { equals: form.username, mode: "insensitive" } };
+    condition = { username: username.toLowerCase() };
   }
-  const user = (await prisma.user.findMany({ where: condition }))[0];
-  if (!user || !(await bcrypt.compare(form.password, user.password))) {
+  const user = await prisma.user.findUnique({
+    where: condition,
+    select: { id: true, password: true },
+  });
+
+  user;
+  if (!user) {
+    return json(
+      { error: `User does not exist`, fields: { ...form }, form: "login" },
+      { status: 400 }
+    );
+  }
+  if (!(await bcrypt.compare(password, user.password))) {
     return json(
       { error: `Incorrect login`, fields: { ...form }, form: "login" },
       { status: 400 }

@@ -1,6 +1,6 @@
 {
   "include": [
-    "remix.env.d.ts",
+    "remix.env.d.ts.disabled",
     "**/*.ts",
     "**/*.tsx",
     "app/providers/themeProvider.jsx",

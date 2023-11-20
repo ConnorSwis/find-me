@@ -13,6 +13,7 @@
     "@prisma/client": "^4.11.0",
     "@remix-run/react": "^1.14.3",
     "@remix-run/vercel": "^1.14.3",
+    "@remix-run/web-fetch": "^4.3.4",
     "@vercel/node": "^2.6.2",
     "bcryptjs": "^2.4.3",
     "isbot": "^3.6.5",
