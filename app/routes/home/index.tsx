@@ -87,13 +87,13 @@ export default function Home() {
   return (
     <Layout isSignedIn={!!user}>
       <div className="flex flex-col justify-center w-full max-w-4xl min-h-screen p-8 -mt-20">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
           <Logo />
           <Link to={"/@" + user.username} className="text-blue-600">
             <h1 className="text-5xl text-center w-ful">@{user.username}</h1>
           </Link>
         </div>
-        <ul className="flex flex-col gap-2 p-2 mt-10 text-white bg-black bg-opacity-10">
+        <ul className="flex flex-col gap-2 p-2 mt-10 text-sm text-white bg-black bg-opacity-10 md:text-lg">
           {user.links?.map((link: _Link, index: number) => {
             return link.url ? (
               <li
@@ -102,13 +102,19 @@ export default function Home() {
                     transition.formData?.get("linkId") === link.id ? 0.25 : 1,
                 }}
                 className={
-                  "flex justify-between transition duration-100 ease-out bg-black  p-2  px-2  " +
+                  "flex justify-between transition duration-100 ease-out bg-black gap-1  p-2  px-2  " +
                   (index % 2 === 0 ? "bg-opacity-30" : "bg-opacity-20")
                 }
                 key={link.id}
               >
-                {link.title}
-                <Link to={link.url} target="_blank">
+                <h3 className="w-[25ch] md:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {link.title}
+                </h3>
+                <Link
+                  to={link.url}
+                  target="_blank"
+                  className="w-[25ch] md:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap"
+                >
                   {link.url}
                 </Link>
                 <Form replace method="post">
@@ -130,7 +136,7 @@ export default function Home() {
               ref={formRef}
               action="/home"
               method="post"
-              className="flex justify-between gap-6 p-3 bg-zinc-800"
+              className="flex flex-col justify-between gap-6 p-3 md:flex-row bg-zinc-800"
               style={{ opacity: isCreating ? 0.25 : 1 }}
             >
               <input
