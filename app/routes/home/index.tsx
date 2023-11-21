@@ -86,7 +86,7 @@ export default function Home() {
   }, [isCreating]);
   return (
     <Layout isSignedIn={!!user}>
-      <div className="flex flex-col justify-center w-full max-w-4xl min-h-screen p-8 -mt-20">
+      <div className="flex flex-col justify-start w-full max-w-4xl min-h-screen p-8 md:-mt-20 first-letter md:justify-center">
         <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
           <Logo />
           <Link to={"/@" + user.username} className="text-blue-600">
