@@ -26,16 +26,17 @@ export default function UserPage() {
     <main className="flex items-center justify-center w-screen min-h-screen">
       <section className="flex flex-col items-center justify-center w-full h-screen gap-6 p-6 text-center text-white md:max-w-2xl">
         <h1 className="text-5xl">@{username}</h1>
-        <ul className="flex flex-col items-center justify-center w-full gap-4 md:max-w-4/5">
+        <div className="flex flex-col items-center justify-center w-full gap-4 md:max-w-4/5">
           {links.map(({ id, title, url }: _Link) => (
-            <li
+            <Link
+              className="w-full p-3 text-2xl text-center text-white z-[2] duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-all hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 active:bg-green-600 active:border-b-green-700 active:text-white"
+              to={url}
               key={id}
-              className="w-full p-3 px-5 text-2xl text-center text-white z-[2] duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 "
             >
-              <Link to={url}>{title}</Link>
-            </li>
+              {title}
+            </Link>
           ))}
-        </ul>
+        </div>
       </section>
       <div className="fixed mx-auto bottom-6">
         <Logo />
