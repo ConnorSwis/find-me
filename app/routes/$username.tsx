@@ -23,36 +23,26 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function UserPage() {
   const { username, links } = useLoaderData<typeof loader>();
   return (
-    <div className="flex flex-col items-center justify-start w-full max-w-4xl min-h-screen p-24 mx-auto outline">
-      <button className="absolute top-8 left-8">
-        <Link to="/home">
-          <Logo />
-        </Link>
-      </button>
-      <div className="flex flex-col items-center justify-center gap-6 p-12">
-        <h2 className="text-5xl ">@{username}</h2>
-        <ul>
-          {links.map((link: _Link) => {
-            return (
-              <li key={link.id} className="flex gap-2 text-lg">
-                -{" "}
-                <Link
-                  to={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className=" hover:text-blue-800"
-                  style={{
-                    color: colors.blue["500"],
-                  }}
-                >
-                  {link.title}
-                  {/* <RiExternalLinkFill /> */}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+    <main className="flex items-center justify-center w-screen min-h-screen">
+      <section className="flex flex-col items-center justify-center w-full h-screen gap-6 p-6 text-center text-white md:max-w-2xl">
+        <h1 className="text-5xl">@{username}</h1>
+        <div className="flex flex-col items-center justify-center w-full gap-4 md:max-w-4/5">
+          {links.map(({ id, title, url }: _Link) => (
+            <Link
+              className="w-full p-3 text-2xl text-center text-white z-[2] duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-all hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 active:bg-green-600 active:border-b-green-700 active:text-white"
+              to={url}
+              key={id}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {title}
+            </Link>
+          ))}
+        </div>
+      </section>
+      <div className="fixed mx-auto bottom-6">
+        <Logo />
       </div>
-    </div>
+    </main>
   );
 }

@@ -8,7 +8,7 @@ export function Layout({
   isSignedIn?: boolean;
 }) {
   return (
-    <div className="flex items-start justify-start w-full max-w-4xl min-h-screen font-mono text-black md:justify-center md:items-center md:mx-auto ">
+    <div className="flex items-center justify-center w-full max-w-3xl min-h-screen font-mono text-black md:mx-auto ">
       {children}
       {isSignedIn && <SignOutButton />}
     </div>
