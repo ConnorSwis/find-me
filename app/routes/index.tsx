@@ -17,7 +17,7 @@ export default function Index() {
     <Layout isSignedIn={!!user}>
       <div className="flex flex-col items-center justify-center w-full p-6 rounded-md bg-zinc-900">
         <Logo />
-        <hr className="w-2/3 h-px m-4 border-0 rounded-full bg-zinc-300" />
+        {/* <hr className="w-2/3 h-px m-4 border-0 rounded-full bg-zinc-300" /> */}
         <div className="flex flex-col items-center justify-center w-full gap-8 p-6">
           {user ? (
             <>
@@ -27,6 +27,7 @@ export default function Index() {
               >
                 @{user.username}
               </Link>
+              <hr className="w-2/3 h-px border-0 rounded-full bg-zinc-300" />
               <Link
                 to="/home"
                 className="w-2/3 p-3 px-5 text-2xl text-center text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 "
@@ -37,7 +38,7 @@ export default function Index() {
           ) : (
             <Link
               to="/login"
-              className="p-3 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300"
+              className="p-3 mt-4 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300"
             >
               Login or Signup
             </Link>
