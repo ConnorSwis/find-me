@@ -14,24 +14,26 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Index() {
   const user = useLoaderData();
   return (
-    <Layout>
-      <div className="flex flex-col items-center justify-center gap-8 p-6 -mt-16 rounded-md bg-zinc-900">
+    <Layout isSignedIn={!!user}>
+      <div className="flex flex-col items-center justify-center w-full p-6 rounded-md bg-zinc-900">
         <Logo />
-        <div className="flex flex-col items-center justify-center gap-8">
+        <hr className="w-2/3 h-px m-4 border-0 rounded-full bg-zinc-300" />
+        <div className="flex flex-col items-center justify-center w-full gap-8 p-6">
           {user ? (
-            <div className="flex flex-col items-center justify-center gap-1">
+            <>
+              <Link
+                to={`/@${user.username}`}
+                className="w-full text-3xl text-center text-blue-600 transition-colors hover:text-white"
+              >
+                @{user.username}
+              </Link>
               <Link
                 to="/home"
-                className="p-3 px-5 text-xl text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 "
+                className="w-2/3 p-3 px-5 text-2xl text-center text-white duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-color hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 "
               >
                 Home
               </Link>
-              <SignOutButton>
-                <p className="text-xl font-bold text-blue-500 hover:text-blue-700">
-                  Sign Out
-                </p>
-              </SignOutButton>
-            </div>
+            </>
           ) : (
             <Link
               to="/login"
@@ -42,11 +44,13 @@ export default function Index() {
           )}
           <div className="flex flex-col items-center justify-center text-sm text-white">
             <p>Created by ConnorSwis</p>
-            <Link to="https://github.com/ConnorSwis/find-me" target="_blank">
-              <div className="flex items-center justify-center gap-2 text-gray-200 hover:underline hover:text-blue-700">
-                Project on Github
-                <RiGithubFill />
-              </div>
+            <Link
+              to="https://github.com/ConnorSwis/find-me"
+              target="_blank"
+              className="flex items-center justify-center gap-2 text-gray-200 hover:underline hover:text-blue-700"
+            >
+              Project on Github
+              <RiGithubFill />
             </Link>
           </div>
         </div>
