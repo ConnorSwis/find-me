@@ -32,6 +32,8 @@ export default function UserPage() {
               className="w-full p-3 text-2xl text-center text-white z-[2] duration-200 bg-blue-700 border-b-4 rounded-md shadow transition-all hover:text-blue-700 hover:bg-white hover:shadow-inner border-b-blue-900 hover:border-b-gray-300 active:bg-green-600 active:border-b-green-700 active:text-white"
               to={url}
               key={id}
+              target="_blank"
+              rel="noreferrer"
             >
               {title}
             </Link>
